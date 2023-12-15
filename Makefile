@@ -20,7 +20,7 @@ shell:
 	@docker compose run --rm --no-deps $(service) sh
 
 prisma-studio:
-	@docker compose exec backend sh -c "npm run db:studio"
+	@docker compose exec app sh -c "npm run prisma:studio"
 
 psql:
 	@docker compose exec postgres sh -c "su - postgres -c 'psql $(db)'"
