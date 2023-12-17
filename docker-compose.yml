@@ -3,9 +3,12 @@ services:
     container_name: eat_it_app
     build: .
     stdin_open: true
+    environment:
+      - TERM=xterm-256color
     ports:
       - 3000:3000
       - 3010:3010
+      - 5555:5555
     volumes:
       - .:/app
 
