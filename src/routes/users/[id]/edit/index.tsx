@@ -28,8 +28,7 @@ export const useUpdateUser = routeAction$(
     throw redirect(301, `/users/${user.id}`)
   },
   zod$({
-    firstName: z.string().min(1),
-    lastName: z.string().min(1),
+    name: z.string().min(1),
     email: z.string().email(),
   }),
 );
@@ -51,20 +50,11 @@ export default component$(() => {
 
       <TextField
         type="text"
-        id="firstName"
-        label="First Name"
-        error={!!updateUserAction.value?.fieldErrors.firstName}
-        value={user.value?.firstName}
-        helperText={updateUserAction.value?.fieldErrors.firstName?.join(", ")}
-      />
-
-      <TextField
-        type="text"
-        id="lastName"
-        label="Last Name"
-        error={!!updateUserAction.value?.fieldErrors.lastName}
-        value={user.value?.lastName}
-        helperText={updateUserAction.value?.fieldErrors.lastName?.join(", ")}
+        id="name"
+        label="Name"
+        error={!!updateUserAction.value?.fieldErrors.name}
+        value={user.value?.name}
+        helperText={updateUserAction.value?.fieldErrors.name?.join(", ")}
       />
 
       <input type="submit" value="Submit" />

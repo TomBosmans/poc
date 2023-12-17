@@ -1,5 +1,5 @@
 import { component$ } from "@builder.io/qwik";
-import { routeLoader$, type DocumentHead, Link, useNavigate } from "@builder.io/qwik-city";
+import { routeLoader$, type DocumentHead, useNavigate } from "@builder.io/qwik-city";
 import Table from "~/components/common/table/table";
 import User from "~/models/user.model";
 import UserRepository from "~/repositories/user.repository";
@@ -16,13 +16,12 @@ export default component$(() => {
 
   return (
     <>
-      <Link href="/users/new">Create new user</Link>
       <Table
         rows={users.value}
         onRowClick$={async (user) => await nav(`/users/${user.id}`)}
         columns={[
           { field: "email", headerName: "E-mail" },
-          { field: "fullName", headerName: "Name" },
+          { field: "name", headerName: "Name" },
           { field: "createdAt", headerName: "Created At" },
           { field: "updatedAt", headerName: "Updated At" },
         ]}

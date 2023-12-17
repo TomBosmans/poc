@@ -3,23 +3,20 @@ import BaseModel from "./base.model";
 
 export default class User extends BaseModel({
   id: z.string().uuid(),
+  name: z.string().nullable(),
   email: z.string().email(),
-  firstName: z.string(),
-  lastName: z.string(),
+  image: z.string().url().nullable(),
+  emailVerified: z.date().nullable(),
   createdAt: z.date(),
   updatedAt: z.date(),
 }) {
-  public get fullName() {
-    return `${this.firstName} ${this.lastName}`;
-  }
-
   public serialize() {
     return {
       id: this.id,
+      name: this.name,
       email: this.email,
-      firstName: this.firstName,
-      lastName: this.lastName,
-      fullName: this.fullName,
+      image: this.image,
+      emailVerified: this.emailVerified,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };

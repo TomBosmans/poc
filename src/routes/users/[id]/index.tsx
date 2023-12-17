@@ -23,10 +23,7 @@ export default component$(() => {
         <dd>{user.value.email}</dd>
 
         <dt>First name</dt>
-        <dd>{user.value.firstName}</dd>
-
-        <dt>Last name</dt>
-        <dd>{user.value.lastName}</dd>
+        <dd>{user.value.name}</dd>
 
         <dt>Created at</dt>
         <dd>{user.value.createdAt.toLocaleString()}</dd>

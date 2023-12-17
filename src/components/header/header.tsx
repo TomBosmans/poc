@@ -1,24 +1,30 @@
-import { Form } from "@builder.io/qwik-city";
+import SignOut from "../auth/sign-out";
+import styles from "./header.module.css";
 import { component$ } from "@builder.io/qwik";
-import { useAuthSession, useAuthSignout } from "~/routes/plugin@auth";
+import { useAuthSession } from "~/routes/plugin@auth";
 
 export default component$(() => {
-  const signOut = useAuthSignout();
   const session = useAuthSession();
+  const image = session.value?.user?.image;
 
   return (
     <nav>
       <ul>
         <li>
-          <strong>{session.value?.user?.email}</strong>
+          {image && (
+            <img
+              class={styles.avatar}
+              src={image}
+              alt="Avatar"
+              width="50"
+              height="50"
+            />
+          )}
         </li>
       </ul>
       <ul>
         <li>
-          <Form action={signOut}>
-            <input type="hidden" name="callbackUrl" value="/sign_in" />
-            <button>Sign Out</button>
-          </Form>
+          <SignOut />
         </li>
       </ul>
     </nav>
