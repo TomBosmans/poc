@@ -48,6 +48,8 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.0.11",
+    "@casl/ability": "^6.5.0",
+    "@casl/prisma": "^1.4.1",
     "@prisma/client": "^5.3.1",
     "cli-highlight": "^2.1.11",
     "pino": "^8.17.1",

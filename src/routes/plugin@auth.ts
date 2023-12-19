@@ -1,8 +1,8 @@
 import GitHub from "@auth/core/providers/github";
 import User from "~/models/user.model";
-import type { User as PrismaUser } from "@prisma/client";
 import prisma from "~/prisma";
 import type { Provider } from "@auth/core/providers";
+import type { User as PrismaUser } from "@prisma/client";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { serverAuth$ } from "@builder.io/qwik-auth";
 
@@ -13,13 +13,14 @@ export const { onRequest, useAuthSession, useAuthSignin, useAuthSignout } =
     adapter: PrismaAdapter(prisma),
     providers: [
       GitHub({
-        clientId: env.get("GITHUB_ID")!,
-        clientSecret: env.get("GITHUB_SECRET")!,
+        clientId: env.get("GITHUB_ID"),
+        clientSecret: env.get("GITHUB_SECRET"),
       }),
     ] as Provider[],
     callbacks: {
-      async session({ session, user }) {
-        session.user = new User(user as PrismaUser).serialize();
+      async session({ session, user: userData }) {
+        const user = new User(userData as PrismaUser)
+        session.user = user.serialize();
         return session;
       },
     },

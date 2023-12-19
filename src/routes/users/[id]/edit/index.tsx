@@ -7,25 +7,30 @@ import {
   Form,
   routeLoader$,
 } from "@builder.io/qwik-city";
+import { subject } from "@casl/ability";
 import TextField from "~/components/common/text-field/text-field";
 import UserRepository from "~/repositories/user.repository";
+import handlePermission from "~/routes/handlers/handlePermission";
 
-export const useUserLoader = routeLoader$(async (requestEvent) => {
+export const useUserLoader = routeLoader$(async (event) => {
   const userRepository = new UserRepository();
   const user = await userRepository.findOne({
-    where: { id: requestEvent.params.id },
+    where: { id: event.params.id },
   });
-  return user?.serialize();
+  if (!user) throw event.error(404, "Not found");
+  handlePermission("update", subject("User", user), event);
+  return user.serialize();
 });
 
 export const useUpdateUser = routeAction$(
-  async (data, { params, redirect }) => {
+  async (data, event) => {
     const userRepository = new UserRepository();
+    handlePermission("update", "User", event);
     const user = await userRepository.update({
       data,
-      where: { id: params.id },
+      where: { id: event.params.id },
     });
-    throw redirect(301, `/users/${user.id}`)
+    throw event.redirect(301, `/users/${user.id}`);
   },
   zod$({
     name: z.string().min(1),

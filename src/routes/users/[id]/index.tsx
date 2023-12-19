@@ -1,17 +1,21 @@
 import { component$ } from "@builder.io/qwik";
 import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
+import { subject } from "@casl/ability";
 import UserRepository from "~/repositories/user.repository";
+import handlePermission from "~/routes/handlers/handlePermission";
 
-export const userLoader = routeLoader$(async ({ params }) => {
+export const useUser = routeLoader$(async (event) => {
   const userRepository = new UserRepository();
-  const user = await userRepository.findOneOrThrow({
-    where: { id: params.id },
+  const user = await userRepository.findOne({
+    where: { id: event.params.id },
   });
+  if (!user) throw event.error(404, "Not found")
+  handlePermission("read", subject("User", user), event)
   return user.serialize();
 });
 
 export default component$(() => {
-  const user = userLoader();
+  const user = useUser();
 
   return (
     <section>
