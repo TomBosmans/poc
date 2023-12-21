@@ -10,6 +10,7 @@ import {
 import { subject } from "@casl/ability";
 import TextField from "~/components/common/text-field/text-field";
 import userRepository from "~/repositories/user.repository";
+import handleNotFound from "~/routes/handlers/handleNotFound";
 import handlePermission from "~/routes/handlers/handlePermission";
 
 export const useUserLoader = routeLoader$(async (event) => {
@@ -17,19 +18,26 @@ export const useUserLoader = routeLoader$(async (event) => {
     where: { id: event.params.id },
   });
   if (!user) throw event.error(404, "Not found");
-  handlePermission("update", subject("User", user), event);
+  handlePermission("read", subject("User", user), event);
 
-  return user
+  return user;
 });
 
 export const useUpdateUser = routeAction$(
   async (data, event) => {
-    handlePermission("update", "User", event);
-    const user = await userRepository.update({
-      data,
+    const user = await userRepository.findOne({
       where: { id: event.params.id },
     });
-    throw event.redirect(301, `/users/${user.id}`);
+
+    if (!user) return handleNotFound(user, event);
+    handlePermission("update", subject("User", user), event);
+
+    const updatedUser = await userRepository.update({
+      where: { id: user.id },
+      data,
+    });
+
+    throw event.redirect(301, `/users/${updatedUser.id}`);
   },
   zod$({
     name: z.string().min(1),
