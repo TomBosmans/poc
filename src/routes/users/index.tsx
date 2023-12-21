@@ -1,6 +1,4 @@
 import Table from "~/components/common/table/table";
-import User from "~/models/user.model";
-import UserRepository from "~/repositories/user.repository";
 import { component$ } from "@builder.io/qwik";
 import type { RequestHandler } from "@builder.io/qwik-city";
 import {
@@ -11,6 +9,7 @@ import {
 import { accessibleBy } from "@casl/prisma";
 import type { AppAbility } from "~/ability";
 import handlePermission from "../handlers/handlePermission";
+import userRepository from "~/repositories/user.repository";
 
 export const onGet: RequestHandler = async (event) => {
   handlePermission("read", "User", event);
@@ -18,11 +17,11 @@ export const onGet: RequestHandler = async (event) => {
 
 export const useUsers = routeLoader$(async ({ sharedMap }) => {
   const ability: AppAbility = sharedMap.get("ability");
-  const userRepository = new UserRepository();
   const users = await userRepository.findMany({
     where: accessibleBy(ability).User,
   });
-  return User.serialize(users);
+
+  return users
 });
 
 export default component$(() => {
@@ -37,7 +36,6 @@ export default component$(() => {
         columns={[
           { field: "email", headerName: "E-mail" },
           { field: "name", headerName: "Name" },
-          { field: "role", headerName: "Role" },
           { field: "createdAt", headerName: "Created At" },
           { field: "updatedAt", headerName: "Updated At" },
         ]}

@@ -1,38 +1,57 @@
-import type { Prisma } from "@prisma/client";
-import User from "~/models/user.model";
 import prisma from "~/prisma";
+import userSchema from "~/schemas/user.schema";
+import type { Prisma, PrismaClient } from "@prisma/client";
 
-export default class UserRepository {
+class UserRepository {
+  constructor(private readonly prisma: PrismaClient) { }
+
   public async findOne(
     params?: Prisma.UserFindFirstArgs,
-  ): Promise<User | null> {
+    prisma: Prisma.TransactionClient = this.prisma,
+  ) {
     const user = await prisma.user.findFirst(params);
-    return user && new User(user);
+    return user ? userSchema.parse(user) : null;
   }
 
   public async findOneOrThrow(
     params?: Prisma.UserFindFirstArgs,
-  ): Promise<User> {
+    prisma: Prisma.TransactionClient = this.prisma,
+  ) {
     const user = await prisma.user.findFirstOrThrow(params);
-    return new User(user);
+    return userSchema.parse(user);
   }
 
-  public async findMany(params?: Prisma.UserFindManyArgs): Promise<User[]> {
+  public async findMany(
+    params?: Prisma.UserFindManyArgs,
+    prisma: Prisma.TransactionClient = this.prisma,
+  ) {
     const users = await prisma.user.findMany(params);
-    return users.map((user) => new User(user));
+    return userSchema.array().parse(users);
   }
 
-  public async create(params: Prisma.UserCreateArgs): Promise<User> {
+  public async create(
+    params: Prisma.UserCreateArgs,
+    prisma: Prisma.TransactionClient = this.prisma,
+  ) {
     const user = await prisma.user.create(params);
-    return new User(user);
+    return userSchema.parse(user);
   }
 
-  public async update(params: Prisma.UserUpdateArgs): Promise<User> {
+  public async update(
+    params: Prisma.UserUpdateArgs,
+    prisma: Prisma.TransactionClient = this.prisma,
+  ) {
     const user = await prisma.user.update(params);
-    return new User(user);
+    return userSchema.parse(user);
   }
 
-  public async delete(params: Prisma.UserDeleteArgs): Promise<void> {
+  public async delete(
+    params: Prisma.UserDeleteArgs,
+    prisma: Prisma.TransactionClient = this.prisma,
+  ) {
     await prisma.user.delete(params);
   }
 }
+
+const userRepository = new UserRepository(prisma);
+export default userRepository;

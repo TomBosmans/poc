@@ -1,22 +1,37 @@
-import { AbilityBuilder } from "@casl/ability";
-import type { PureAbility } from "@casl/ability";
-import { createPrismaAbility } from "@casl/prisma";
+import interpolate from "./lib/interpolate";
+import type * as prismaModel from "@prisma/client";
+import type { Permission } from "./schemas/permission.schema";
+import type { PermissionAction } from "./schemas/permission-action.schema";
+import type { PermissionSubject } from "./schemas/permission-subject.schema";
 import type { PrismaQuery, Subjects } from "@casl/prisma";
-import type { User } from "@prisma/client";
+import type { PureAbility } from "@casl/ability";
+import type { User } from "./schemas/user.schema";
+import { AbilityBuilder } from "@casl/ability";
+import { createPrismaAbility } from "@casl/prisma";
 
-export type AppAction = "manage" | "create" | "read" | "update" | "delete";
+export type AppAction = PermissionAction;
 export type AppSubject = Subjects<{
-  User: User;
+  [PermissionSubject.Account]: prismaModel.Account;
+  [PermissionSubject.Role]: prismaModel.Role;
+  [PermissionSubject.Session]: prismaModel.Session;
+  [PermissionSubject.User]: prismaModel.User;
+  [PermissionSubject.VerificationToken]: prismaModel.VerificationToken;
 }>;
+
 export type AppAbility = PureAbility<[AppAction, AppSubject], PrismaQuery>;
 
 export default function defineAbilityFor(user: User) {
   const { can, build } = new AbilityBuilder<AppAbility>(createPrismaAbility);
+  if (!user.role) return build();
 
-  if (user.role === "APPLICATION_ADMIN") {
-    return can("manage", "User");
-  }
+  const permissions = interpolate<Permission[]>(
+    JSON.stringify(user.role.permissions),
+    { user },
+  );
 
-  can("manage", "User", { id: user.id });
+  permissions.forEach(({ action, subject, condition }) => {
+    can(action, subject, condition || undefined);
+  });
+
   return build();
 }

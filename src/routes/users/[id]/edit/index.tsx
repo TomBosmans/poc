@@ -9,22 +9,21 @@ import {
 } from "@builder.io/qwik-city";
 import { subject } from "@casl/ability";
 import TextField from "~/components/common/text-field/text-field";
-import UserRepository from "~/repositories/user.repository";
+import userRepository from "~/repositories/user.repository";
 import handlePermission from "~/routes/handlers/handlePermission";
 
 export const useUserLoader = routeLoader$(async (event) => {
-  const userRepository = new UserRepository();
   const user = await userRepository.findOne({
     where: { id: event.params.id },
   });
   if (!user) throw event.error(404, "Not found");
   handlePermission("update", subject("User", user), event);
-  return user.serialize();
+
+  return user
 });
 
 export const useUpdateUser = routeAction$(
   async (data, event) => {
-    const userRepository = new UserRepository();
     handlePermission("update", "User", event);
     const user = await userRepository.update({
       data,
@@ -49,7 +48,7 @@ export default component$(() => {
         type="email"
         label="Email"
         error={!!updateUserAction.value?.fieldErrors.email}
-        value={user.value?.email}
+        value={user.value.email}
         helperText={updateUserAction.value?.fieldErrors.email?.join(", ")}
       />
 
@@ -58,7 +57,7 @@ export default component$(() => {
         id="name"
         label="Name"
         error={!!updateUserAction.value?.fieldErrors.name}
-        value={user.value?.name}
+        value={user.value.name}
         helperText={updateUserAction.value?.fieldErrors.name?.join(", ")}
       />
 

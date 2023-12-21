@@ -7,24 +7,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-  USER
-  TENANT_ADMIN
-  APPLICATION_ADMIN
+model Role {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  permissions Json
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
 
-  @@map("user_role")
+  users User[]
+
+  @@map("roles")
 }
 
 model User {
   id            String    @id @default(uuid()) @db.Uuid
+  roleId        String    @map("role_id") @db.Uuid
   name          String?
   email         String    @unique
   emailVerified DateTime? @map("email_verified")
   image         String?
-  role          UserRole  @default(USER)
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at")
 
+  role     Role      @relation(fields: [roleId], references: [id])
   accounts Account[]
   sessions Session[]
 
