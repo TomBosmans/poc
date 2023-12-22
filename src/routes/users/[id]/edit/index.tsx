@@ -9,6 +9,7 @@ import {
 } from "@builder.io/qwik-city";
 import { subject } from "@casl/ability";
 import TextField from "~/components/common/text-field/text-field";
+import avatarRepository from "~/repositories/avatar.repository";
 import userRepository from "~/repositories/user.repository";
 import handleNotFound from "~/routes/handlers/handleNotFound";
 import handlePermission from "~/routes/handlers/handlePermission";
@@ -32,9 +33,14 @@ export const useUpdateUser = routeAction$(
     if (!user) return handleNotFound(user, event);
     handlePermission("update", subject("User", user), event);
 
+    const avatarUrl = await avatarRepository.upsert({
+      where: { userId: user.id },
+      data: { file: data.avatar },
+    });
+
     const updatedUser = await userRepository.update({
       where: { id: user.id },
-      data,
+      data: { name: data.name, email: data.email, image: avatarUrl },
     });
 
     throw event.redirect(301, `/users/${updatedUser.id}`);
@@ -42,12 +48,14 @@ export const useUpdateUser = routeAction$(
   zod$({
     name: z.string().min(1),
     email: z.string().email(),
+    avatar: z.custom<File>(),
   }),
 );
 
 export default component$(() => {
   const user = useUserLoader();
   const updateUserAction = useUpdateUser();
+  console.log(updateUserAction.value?.fieldErrors);
 
   return (
     <Form action={updateUserAction}>
@@ -67,6 +75,14 @@ export default component$(() => {
         error={!!updateUserAction.value?.fieldErrors.name}
         value={user.value.name}
         helperText={updateUserAction.value?.fieldErrors.name?.join(", ")}
+      />
+
+      <TextField
+        type="file"
+        id="avatar"
+        label="Avatar"
+        error={!!updateUserAction.value?.fieldErrors.avatar}
+        helperText={updateUserAction.value?.fieldErrors.avatar?.join(", ")}
       />
 
       <input type="submit" value="Submit" />

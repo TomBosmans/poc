@@ -3,7 +3,6 @@ import type { Adapter, AdapterAccount } from "@auth/core/adapters";
 import userRepository from "~/repositories/user.repository";
 import userSchema from "~/schemas/user.schema";
 import sessionSchema from "~/schemas/session.schema";
-import roleSchema from "~/schemas/role.schema";
 
 export function PrismaAdapter(prisma: PrismaClient): Adapter {
   return {

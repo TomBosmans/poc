@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import type { Permission } from "./schemas/permission.schema";
+import { setupStorage } from "./storage";
 
 const prisma = new PrismaClient();
 
@@ -37,6 +38,7 @@ async function seed() {
   });
 }
 
+setupStorage()
 seed().finally(async () => {
   await prisma.$disconnect();
 });
