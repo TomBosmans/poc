@@ -12,7 +12,7 @@ import handlePermission from "../handlers/handlePermission";
 
 export const useUsers = routeLoader$(async (event) => {
   const ability: AppAbility = event.sharedMap.get("ability");
-  handlePermission("read", "User", event)
+  handlePermission("read", "User", event);
   const users = await userRepository.findMany({
     where: accessibleBy(ability).User,
   });
