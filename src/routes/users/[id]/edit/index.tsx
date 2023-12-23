@@ -8,7 +8,7 @@ import {
   routeLoader$,
 } from "@builder.io/qwik-city";
 import { subject } from "@casl/ability";
-import TextField from "~/components/common/text-field/text-field";
+import InputField from "~/components/common/input-field/input-field";
 import avatarRepository from "~/repositories/avatar.repository";
 import userRepository from "~/repositories/user.repository";
 import handleNotFound from "~/routes/handlers/handleNotFound";
@@ -59,7 +59,7 @@ export default component$(() => {
 
   return (
     <Form action={updateUserAction}>
-      <TextField
+      <InputField
         id="email"
         type="email"
         label="Email"
@@ -68,7 +68,7 @@ export default component$(() => {
         helperText={updateUserAction.value?.fieldErrors.email?.join(", ")}
       />
 
-      <TextField
+      <InputField
         type="text"
         id="name"
         label="Name"
@@ -77,7 +77,7 @@ export default component$(() => {
         helperText={updateUserAction.value?.fieldErrors.name?.join(", ")}
       />
 
-      <TextField
+      <InputField
         type="file"
         id="avatar"
         label="Avatar"

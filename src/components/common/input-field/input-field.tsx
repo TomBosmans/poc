@@ -1,5 +1,5 @@
 import { component$ } from "@builder.io/qwik";
-import styles from "./text-field.module.css";
+import styles from "./input-field.module.css";
 
 type Props = {
   id?: string;
