@@ -1,6 +1,6 @@
 import { z } from "@builder.io/qwik-city";
 import dateSchema from "./common/date.schema";
-import userSchema, { type UserInput } from "./user.schema";
+import userSchema, { type User } from "./user.schema";
 
 const baseAccountSchema = z.object({
   id: z.string().uuid(),
@@ -19,13 +19,15 @@ const baseAccountSchema = z.object({
   updatedAt: dateSchema,
 })
 
-export type AccountInput = z.input<typeof baseAccountSchema> & {
-  user?: UserInput
+type AccountInput = z.input<typeof baseAccountSchema> & {
+  user?: z.input<typeof userSchema>
 }
 
-const accountSchema = baseAccountSchema.extend({
+export type Account = z.output<typeof baseAccountSchema> & {
+  user?: User
+}
+
+const accountSchema: z.ZodType<AccountInput> = baseAccountSchema.extend({
   user: z.lazy(() => userSchema.optional())
 })
-
-export type Account = z.output<typeof accountSchema>
 export default accountSchema

@@ -1,6 +1,6 @@
 import { z } from "@builder.io/qwik-city";
 import dateSchema from "./common/date.schema";
-import userSchema, { type UserInput } from "./user.schema";
+import userSchema, { type User } from "./user.schema";
 
 const baseSessionSchema = z.object({
   id: z.string().uuid(),
@@ -11,13 +11,17 @@ const baseSessionSchema = z.object({
   updatedAt: dateSchema,
 });
 
-export type SessionInput = z.input<typeof baseSessionSchema> & {
-  user?: UserInput
+type SessionInput = z.input<typeof baseSessionSchema> & {
+  user?: z.input<typeof userSchema>
 };
+
+type SessionOutput = z.output<typeof baseSessionSchema> & {
+  user?: User
+}
 
 const sessionSchema: z.ZodType<SessionInput> = baseSessionSchema.extend({
   user: z.lazy(() => userSchema.optional())
 });
 
-export type Session = z.output<typeof sessionSchema>
+export type Session = SessionOutput
 export default sessionSchema

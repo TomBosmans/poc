@@ -1,6 +1,6 @@
 import { z } from "@builder.io/qwik-city";
 import permissionSchema from "./permission.schema";
-import userSchema, { type UserInput } from "./user.schema";
+import userSchema, { type User } from "./user.schema";
 import dateSchema from "./common/date.schema";
 
 const baseRoleSchema = z.object({
@@ -11,13 +11,17 @@ const baseRoleSchema = z.object({
   updatedAt: dateSchema,
 });
 
-export type RoleInput = z.input<typeof baseRoleSchema> & {
-  user?: UserInput;
+type RoleInput = z.input<typeof baseRoleSchema> & {
+  user?: z.input<typeof userSchema>;
 };
+
+type RoleOutput = z.output<typeof baseRoleSchema> & {
+  user?: User
+}
 
 const roleSchema: z.ZodType<RoleInput> = baseRoleSchema.extend({
   user: z.lazy(() => userSchema.optional())
 });
 
-export type Role = z.output<typeof roleSchema>;
+export type Role = RoleOutput
 export default roleSchema;

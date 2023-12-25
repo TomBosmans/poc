@@ -1,8 +1,8 @@
 import { z } from "@builder.io/qwik-city";
 import dateSchema from "./common/date.schema";
-import roleSchema, { type RoleInput } from "./role.schema";
-import sessionSchema, { type SessionInput } from "./session.schema";
-import accountSchema, { type AccountInput } from "./account.schema";
+import roleSchema, { type Role } from "./role.schema";
+import sessionSchema, { type Session } from "./session.schema";
+import accountSchema, { type Account } from "./account.schema";
 
 const baseUserSchema = z.object({
   id: z.string().uuid(),
@@ -15,10 +15,16 @@ const baseUserSchema = z.object({
   updatedAt: dateSchema,
 });
 
-export type UserInput = z.input<typeof baseUserSchema> & {
-  role?: RoleInput;
-  sessions?: SessionInput[];
-  accounts?: AccountInput[];
+type UserInput = z.input<typeof baseUserSchema> & {
+  role?: z.input<typeof roleSchema>;
+  sessions?: Array<z.input<typeof sessionSchema>>;
+  accounts?: Array<z.input<typeof accountSchema>>;
+};
+
+type UserOutput = z.output<typeof baseUserSchema> & {
+  role?: Role;
+  sessions?: Session[];
+  accounts?: Account[];
 };
 
 const userSchema: z.ZodType<UserInput> = baseUserSchema.extend({
@@ -27,5 +33,5 @@ const userSchema: z.ZodType<UserInput> = baseUserSchema.extend({
   accounts: z.lazy(() => accountSchema.array().optional()),
 });
 
-export type User = z.output<typeof userSchema>;
+export type User = UserOutput;
 export default userSchema;
