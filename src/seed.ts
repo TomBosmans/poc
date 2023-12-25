@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import type { Permission } from "./schemas/permission.schema";
+import { type Permission } from "./schemas/permission.schema";
 import { setupStorage } from "./storage";
 
 const prisma = new PrismaClient();
@@ -9,11 +9,7 @@ const userPermissions = [
 ] satisfies Permission[];
 
 const adminPermissions = [
-  { action: "manage", subject: "User", condition: null },
-  { action: "manage", subject: "Account", condition: null },
-  { action: "manage", subject: "VerificationToken", condition: null },
-  { action: "manage", subject: "Session", condition: null },
-  { action: "manage", subject: "Role", condition: null },
+  { action: "manage", subject: "all", condition: null },
 ] satisfies Permission[];
 
 async function seed() {
@@ -38,7 +34,7 @@ async function seed() {
   });
 }
 
-setupStorage()
+setupStorage();
 seed().finally(async () => {
   await prisma.$disconnect();
 });

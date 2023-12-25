@@ -1,9 +1,5 @@
 import { component$ } from "@builder.io/qwik";
 
 export default component$(() => {
-  return (
-    <form>
-      <slot />
-    </form>
-  );
-});
+  return <div>Welcome to the dashboard!</div>
+})

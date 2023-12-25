@@ -1,4 +1,4 @@
-import permissionActionSchema from "./permission-action.schema";
+import permissionActionSchema, { PermissionAction } from "./permission-action.schema";
 import type { WhereInputPerModel } from "@casl/prisma/dist/types/prismaClientBoundTypes";
 import { PermissionSubject } from "./permission-subject.schema";
 import { z } from "@builder.io/qwik-city";
@@ -33,12 +33,26 @@ const verificationTokenPermissionSchema = z.object({
   condition: z.custom<WhereInputPerModel["VerificationToken"]>().nullable(),
 });
 
+const dashboardPermissionSchema = z.object({
+  action: z.enum([PermissionAction.read]),
+  subject: z.literal(PermissionSubject.Dashboard),
+  condition: z.null()
+})
+
+const allPermissionSchema = z.object({
+  action: permissionActionSchema,
+  subject: z.literal(PermissionSubject.all),
+  condition: z.null()
+})
+
 const permissionSchema = z.discriminatedUnion("subject", [
   userPermissionSchema,
   sessionPermissionSchema,
   rolePermissionSchema,
   accountPermissionSchema,
   verificationTokenPermissionSchema,
+  dashboardPermissionSchema,
+  allPermissionSchema,
 ]);
 
 export type Permission = z.output<typeof permissionSchema>;

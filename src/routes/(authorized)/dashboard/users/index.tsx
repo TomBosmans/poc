@@ -1,4 +1,3 @@
-import Table from "~/components/common/table/table";
 import { component$ } from "@builder.io/qwik";
 import {
   routeLoader$,
@@ -7,8 +6,9 @@ import {
 } from "@builder.io/qwik-city";
 import { accessibleBy } from "@casl/prisma";
 import type { AppAbility } from "~/ability";
+import Table from "~/components/common/table";
 import userRepository from "~/repositories/user.repository";
-import handlePermission from "../handlers/handlePermission";
+import handlePermission from "~/routes/handlers/handlePermission";
 
 export const useUsers = routeLoader$(async (event) => {
   const ability: AppAbility = event.sharedMap.get("ability");
@@ -25,18 +25,16 @@ export default component$(() => {
   const nav = useNavigate();
 
   return (
-    <>
-      <Table
-        rows={users.value}
-        onRowClick$={async (user) => await nav(`/users/${user.id}`)}
-        columns={[
-          { field: "email", headerName: "E-mail" },
-          { field: "name", headerName: "Name" },
-          { field: "createdAt", headerName: "Created At" },
-          { field: "updatedAt", headerName: "Updated At" },
-        ]}
-      />
-    </>
+    <Table
+      rows={users.value}
+      onRowClick$={async (user) => await nav(`/dashboard/users/${user.id}`)}
+      columns={[
+        { field: "email", headerName: "E-mail" },
+        { field: "name", headerName: "Name" },
+        { field: "createdAt", headerName: "Created At" },
+        { field: "updatedAt", headerName: "Updated At" },
+      ]}
+    />
   );
 });
 
