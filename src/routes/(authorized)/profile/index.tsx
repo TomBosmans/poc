@@ -7,6 +7,7 @@ import { subject } from "@casl/ability";
 import { type DocumentHead, routeAction$, z, zod$ } from "@builder.io/qwik-city";
 import { type User } from "~/schemas/user.schema";
 import { useCurrentUser } from "../layout";
+import Button from "~/components/common/button";
 
 export const useUpdateUser = routeAction$(
   async (data, event) => {
@@ -51,7 +52,7 @@ export default component$(() => {
         { name: "image", type: "file", label: "Avatar" },
       ]}
     >
-      <button type="submit">Update</button>
+      <Button type="submit" color="primary" variant="contained">Update</Button>
     </Form>
   );
 });
