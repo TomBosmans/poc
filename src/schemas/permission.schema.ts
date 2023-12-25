@@ -1,5 +1,5 @@
+import { type WhereInputPerModel } from "@casl/prisma/dist/types/prismaClientBoundTypes";
 import permissionActionSchema, { PermissionAction } from "./permission-action.schema";
-import type { WhereInputPerModel } from "@casl/prisma/dist/types/prismaClientBoundTypes";
 import { PermissionSubject } from "./permission-subject.schema";
 import { z } from "@builder.io/qwik-city";
 

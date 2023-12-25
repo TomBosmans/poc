@@ -10,7 +10,7 @@ export const onRequest: RequestHandler = async (event) => {
 
 export default component$(() => {
   return (
-    <main class="flex gap-5">
+    <main class="flex gap-5 border-gray-50">
       <nav>
         <Drawer
           links={[

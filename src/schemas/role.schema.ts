@@ -11,17 +11,18 @@ const baseRoleSchema = z.object({
   updatedAt: dateSchema,
 });
 
-type RoleInput = z.input<typeof baseRoleSchema> & {
+type Input = z.input<typeof baseRoleSchema> & {
   user?: z.input<typeof userSchema>;
 };
 
-type RoleOutput = z.output<typeof baseRoleSchema> & {
-  user?: User
-}
+type Output = z.output<typeof baseRoleSchema> & {
+  user?: User;
+};
 
-const roleSchema: z.ZodType<RoleInput> = baseRoleSchema.extend({
-  user: z.lazy(() => userSchema.optional())
-});
+const roleSchema: z.ZodType<Output, z.ZodTypeDef, Input> =
+  baseRoleSchema.extend({
+    user: z.lazy(() => userSchema.optional()),
+  });
 
-export type Role = RoleOutput
+export type Role = Output;
 export default roleSchema;

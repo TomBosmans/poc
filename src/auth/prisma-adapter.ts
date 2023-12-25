@@ -11,10 +11,8 @@ export function PrismaAdapter(prisma: PrismaClient): Adapter {
         {
           data: {
             ...data,
-            role: {
-              // Default user role.
-              connect: { id: "f3087d85-a6e6-47e2-a140-1c488fc39506" },
-            },
+            roleId: "f3087d85-a6e6-47e2-a140-1c488fc39506",
+            languageId: "3d45fac9-9e1d-4539-b47a-38ac1b00710b",
           },
         },
         prisma,

@@ -11,17 +11,18 @@ const baseSessionSchema = z.object({
   updatedAt: dateSchema,
 });
 
-type SessionInput = z.input<typeof baseSessionSchema> & {
-  user?: z.input<typeof userSchema>
+type Input = z.input<typeof baseSessionSchema> & {
+  user?: z.input<typeof userSchema>;
 };
 
-type SessionOutput = z.output<typeof baseSessionSchema> & {
-  user?: User
-}
+type Output = z.output<typeof baseSessionSchema> & {
+  user?: User;
+};
 
-const sessionSchema: z.ZodType<SessionInput> = baseSessionSchema.extend({
-  user: z.lazy(() => userSchema.optional())
-});
+const sessionSchema: z.ZodType<Output, z.ZodTypeDef, Input> =
+  baseSessionSchema.extend({
+    user: z.lazy(() => userSchema.optional()),
+  });
 
-export type Session = SessionOutput
-export default sessionSchema
+export type Session = Output;
+export default sessionSchema;

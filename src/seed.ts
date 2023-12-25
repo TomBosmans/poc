@@ -32,6 +32,16 @@ async function seed() {
     update: { permissions: adminPermissions },
     where: { id: "eb023bc8-6add-4496-b43e-2c56bee13727" },
   });
+
+  await prisma.language.upsert({
+    create: {
+      id: "3d45fac9-9e1d-4539-b47a-38ac1b00710b",
+      code: "en_US",
+      translations: {},
+    },
+    update: { translations: {} },
+    where: { id: "3d45fac9-9e1d-4539-b47a-38ac1b00710b" }
+  })
 }
 
 setupStorage();

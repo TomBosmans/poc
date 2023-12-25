@@ -22,6 +22,7 @@ model Role {
 model User {
   id            String    @id @default(uuid()) @db.Uuid
   roleId        String    @map("role_id") @db.Uuid
+  languageId    String    @map("language_id") @db.Uuid
   name          String?
   email         String    @unique
   emailVerified DateTime? @map("email_verified")
@@ -30,6 +31,7 @@ model User {
   updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at")
 
   role     Role      @relation(fields: [roleId], references: [id])
+  language Language  @relation(fields: [languageId], references: [id])
   accounts Account[]
   sessions Session[]
 
@@ -80,4 +82,16 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
+}
+
+model Language {
+  id           String   @id @default(uuid()) @db.Uuid
+  code         String
+  translations Json
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  users User[]
+
+  @@map("languages")
 }

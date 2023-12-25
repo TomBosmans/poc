@@ -17,17 +17,20 @@ const baseAccountSchema = z.object({
   session_state: z.string().nullable(),
   createdAt: dateSchema,
   updatedAt: dateSchema,
-})
+});
 
-type AccountInput = z.input<typeof baseAccountSchema> & {
-  user?: z.input<typeof userSchema>
-}
+type Input = z.input<typeof baseAccountSchema> & {
+  user?: z.input<typeof userSchema>;
+};
 
-export type Account = z.output<typeof baseAccountSchema> & {
-  user?: User
-}
+type Output = z.output<typeof baseAccountSchema> & {
+  user?: User;
+};
 
-const accountSchema: z.ZodType<AccountInput> = baseAccountSchema.extend({
-  user: z.lazy(() => userSchema.optional())
-})
-export default accountSchema
+const accountSchema: z.ZodType<Output, z.ZodTypeDef, Input> =
+  baseAccountSchema.extend({
+    user: z.lazy(() => userSchema.optional()),
+  });
+
+export type Account = Output;
+export default accountSchema;

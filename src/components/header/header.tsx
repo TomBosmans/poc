@@ -5,7 +5,7 @@ import { useAuthSession } from "~/routes/plugin@auth";
 
 export default component$(() => {
   const session = useAuthSession();
-  const image = session.value?.user?.image;
+  const image = session.value?.user.image;
 
   return (
     <nav>
