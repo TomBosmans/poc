@@ -1,12 +1,32 @@
 import { z } from "@builder.io/qwik-city";
-import jsonSchema from "./common/json.schema";
 import dateSchema from "./common/date.schema";
 import userSchema, { type User } from "./user.schema";
+import translationSchema, { type Translation } from "./translation.schema";
+
+export const defaultTranslation: Translation = {
+  entities: {
+    user: {
+      one: "User",
+      many: "Users",
+      attributes: {
+        id: "ID",
+        email: "E-Mail",
+        name: "Name",
+        image: "Avatar",
+        languageId: "Language ID",
+        roleId: "Role ID",
+        emailVerified: "E-Mail verified",
+        createdAt: "Created At",
+        updatedAt: "Updated At",
+      }
+    }
+  }
+}
 
 const baseLanguageSchema = z.object({
   id: z.string().uuid(),
-  userId: z.string().uuid(),
-  translations: jsonSchema,
+  code: z.string(),
+  translations: translationSchema.default(defaultTranslation),
   createdAt: dateSchema,
   updatedAt: dateSchema,
 });

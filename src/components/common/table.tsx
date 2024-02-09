@@ -1,8 +1,13 @@
+/* eslint-disable qwik/valid-lexical-scope */
 import { component$, $ } from "@builder.io/qwik";
 import type { PropFunction } from "@builder.io/qwik";
 
 type Props<T extends Record<string, unknown>> = {
-  columns: Array<{ field: keyof T; headerName: string }>;
+  columns: Array<{
+    field: keyof T;
+    headerName: string;
+    valueGetter$?: PropFunction<(row: T) => string>;
+  }>;
   rows: T[];
   onRowClick$?: PropFunction<(row: T) => void>;
 };
@@ -25,19 +30,21 @@ export default component$(function <T extends Record<string, unknown>>(
           {props.rows.map((row, index) => {
             const handleClick = props.onRowClick$
               ? $(async () => {
-                // eslint-disable-next-line qwik/valid-lexical-scope
                 return await props.onRowClick$?.(row);
               })
               : null;
 
             return (
-              // eslint-disable-next-line qwik/valid-lexical-scope
               <tr key={index} onClick$={handleClick} class={trStyle}>
-                {props.columns.map((column) => (
-                  <td key={`${index}-${column.headerName}`}>
-                    {`${row[column.field]}`}
-                  </td>
-                ))}
+                {props.columns.map((column) => {
+                 return (
+                    <td key={`${index}-${column.headerName}`}>
+                      {column.valueGetter$
+                        ? column.valueGetter$(row)
+                        : `${row[column.field]}`}
+                    </td>
+                  );
+                })}
               </tr>
             );
           })}

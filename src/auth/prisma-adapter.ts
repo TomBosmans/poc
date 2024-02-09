@@ -3,6 +3,7 @@ import type { Adapter, AdapterAccount } from "@auth/core/adapters";
 import userRepository from "~/repositories/user.repository";
 import userSchema from "~/schemas/user.schema";
 import sessionSchema from "~/schemas/session.schema";
+import sessionRepository from "~/repositories/session.repository";
 
 export function PrismaAdapter(prisma: PrismaClient): Adapter {
   return {
@@ -38,9 +39,9 @@ export function PrismaAdapter(prisma: PrismaClient): Adapter {
         where: { provider_providerAccountId },
       }) as unknown as AdapterAccount,
     async getSessionAndUser(sessionToken) {
-      const userAndSession = await prisma.session.findUnique({
+      const userAndSession = await sessionRepository.findOne({
         where: { sessionToken },
-        include: { user: { include: { role: true } } },
+        include: { user: { include: { role: true, language: true } } },
       });
       if (!userAndSession) return null;
       const { user, ...session } = userAndSession;

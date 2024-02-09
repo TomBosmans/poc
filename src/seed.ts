@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { type Permission } from "./schemas/permission.schema";
 import { setupStorage } from "./storage";
+import { defaultTranslation } from "./schemas/language.schema";
 
 const prisma = new PrismaClient();
 
@@ -36,10 +37,10 @@ async function seed() {
   await prisma.language.upsert({
     create: {
       id: "3d45fac9-9e1d-4539-b47a-38ac1b00710b",
-      code: "en_US",
-      translations: {},
+      code: "en-US",
+      translations: defaultTranslation,
     },
-    update: { translations: {} },
+    update: { code: "en-US", translations: defaultTranslation },
     where: { id: "3d45fac9-9e1d-4539-b47a-38ac1b00710b" }
   })
 }

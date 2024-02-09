@@ -16,8 +16,8 @@ export type AppSubject = Subjects<{
   [PermissionSubject.Session]: prismaModel.Session;
   [PermissionSubject.User]: prismaModel.User;
   [PermissionSubject.VerificationToken]: prismaModel.VerificationToken;
-  [PermissionSubject.Dashboard]: undefined
-  [PermissionSubject.all]: undefined
+  [PermissionSubject.Dashboard]: undefined;
+  [PermissionSubject.all]: undefined;
 }>;
 
 export type AppAbility = PureAbility<[AppAction, AppSubject], PrismaQuery>;
